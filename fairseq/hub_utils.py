@@ -196,6 +196,7 @@ class GeneratorHubInterface(nn.Module):
     def encode(self, sentence: str) -> torch.LongTensor:
         sentence = self.tokenize(sentence)
         sentence = self.apply_bpe(sentence)
+        sentence = '__t2en__ ' + sentence
         return self.binarize(sentence)
 
     def decode(self, tokens: torch.LongTensor) -> str:
