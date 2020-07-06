@@ -150,6 +150,7 @@ class GeneratorHubInterface(nn.Module):
         inference_step_args=None,
         **kwargs
     ) -> List[List[Dict[str, torch.Tensor]]]:
+        from tqdm import tqdm
         if torch.is_tensor(tokenized_sentences) and tokenized_sentences.dim() == 1:
             return self.generate(
                 tokenized_sentences.unsqueeze(0), beam=beam, verbose=verbose, **kwargs
@@ -165,7 +166,7 @@ class GeneratorHubInterface(nn.Module):
         inference_step_args = inference_step_args or {}
         results = []
         itr = self._build_batches(tokenized_sentences, skip_invalid_size_inputs)
-        progress = progress_bar.progress_bar(itr, log_interval=1)
+        progress = tqdm(itr, desc='Translating')
         for batch in progress:
             print('Processing batch')
             batch = utils.apply_to_sample(lambda t: t.to(self.device), batch)
