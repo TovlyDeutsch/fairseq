@@ -15,6 +15,7 @@ from torch import nn
 
 from fairseq import utils
 from fairseq.data import encoders
+from fairseq.logging import progress_bar
 
 
 logger = logging.getLogger(__name__)
@@ -162,7 +163,9 @@ class GeneratorHubInterface(nn.Module):
 
         inference_step_args = inference_step_args or {}
         results = []
-        for batch in self._build_batches(tokenized_sentences, skip_invalid_size_inputs):
+        itr = self._build_batches(tokenized_sentences, skip_invalid_size_inputs)
+        progress = progress_bar.progress_bar(itr)
+        for batch in progress:
             batch = utils.apply_to_sample(lambda t: t.to(self.device), batch)
             translations = self.task.inference_step(
                 generator, self.models, batch, **inference_step_args
