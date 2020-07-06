@@ -7,6 +7,7 @@
 import argparse
 import copy
 import logging
+from logging import log
 import os
 from typing import List, Dict, Iterator, Tuple, Any
 
@@ -164,7 +165,7 @@ class GeneratorHubInterface(nn.Module):
         inference_step_args = inference_step_args or {}
         results = []
         itr = self._build_batches(tokenized_sentences, skip_invalid_size_inputs)
-        progress = progress_bar.progress_bar(itr)
+        progress = progress_bar.progress_bar(itr, log_interval=1)
         for batch in progress:
             batch = utils.apply_to_sample(lambda t: t.to(self.device), batch)
             translations = self.task.inference_step(
