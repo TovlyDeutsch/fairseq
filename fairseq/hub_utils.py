@@ -167,6 +167,7 @@ class GeneratorHubInterface(nn.Module):
         itr = self._build_batches(tokenized_sentences, skip_invalid_size_inputs)
         progress = progress_bar.progress_bar(itr, log_interval=1)
         for batch in progress:
+            print('Processing batch')
             batch = utils.apply_to_sample(lambda t: t.to(self.device), batch)
             translations = self.task.inference_step(
                 generator, self.models, batch, **inference_step_args
