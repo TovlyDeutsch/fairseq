@@ -37,8 +37,8 @@ def extract_and_tokenize():
   test_path = os.path.join(data_dir, 'dev_test.tgz')
   download_and_extract(train_url, train_path)
   download_and_extract(test_url, test_path)
-  rewrite_tokenized(os.path.join(data_dir, 'parallel', 'IITB.en-hi.en'), 'IITB.en-hi.en')
-  rewrite_tokenized(os.path.join(data_dir, 'parallel', 'IITB.en-hi.hi'), 'IITB.en-hi.hi')
+  rewrite_tokenized(os.path.join(data_dir, 'parallel', 'IITB.en-hi.en'), 'train.en')
+  rewrite_tokenized(os.path.join(data_dir, 'parallel', 'IITB.en-hi.hi'), 'train.hi')
   rewrite_tokenized(os.path.join(data_dir, 'dev_test', 'test.en'), 'test.en')
   rewrite_tokenized(os.path.join(data_dir, 'dev_test', 'test.hi'), 'test.hi')
   rewrite_tokenized(os.path.join(data_dir, 'dev_test', 'dev.en'), 'dev.en')
@@ -47,3 +47,10 @@ def extract_and_tokenize():
 
 if __name__ == "__main__":
   extract_and_tokenize()
+"""
+TEXT=iitb/tokenized
+fairseq-preprocess --source-lang hi --target-lang en \
+    --trainpref $TEXT/train --validpref $TEXT/dev --testpref $TEXT/test \
+    --destdir data-bin/iitb \
+    --workers 12
+"""
