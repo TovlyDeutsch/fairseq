@@ -3,6 +3,7 @@ import requests
 import tarfile
 import os
 data_dir = 'iitb'
+tokenized_dir = 'tokenized_iitb_pib'
 
 
 def download_and_extract(url, target_path):
@@ -22,9 +23,9 @@ def rewrite_tokenized(src_path, out_filename):
   src_file = open(src_path, 'r', encoding='utf-8')
   src_lines = src_file.read().split('\n')
   tokenized_lines = list(map(lambda line: ' '.join(indic_tokenize.trivial_tokenize(line)), src_lines))
-  if not os.path.exists(os.path.join(data_dir, 'tokenized')):
-    os.mkdir(os.path.join(data_dir, 'tokenized'))
-  out_file = open(os.path.join(data_dir, 'tokenized', out_filename), 'w', encoding='utf-8')
+  if not os.path.exists(os.path.join(data_dir, tokenized_dir)):
+    os.mkdir(os.path.join(data_dir, tokenized_dir))
+  out_file = open(os.path.join(data_dir, tokenized_dir, out_filename), 'a', encoding='utf-8')
   out_file.write('\n'.join(tokenized_lines))
 
 
@@ -43,6 +44,8 @@ def extract_and_tokenize():
   rewrite_tokenized(os.path.join(data_dir, 'dev_test', 'test.hi'), 'test.hi')
   rewrite_tokenized(os.path.join(data_dir, 'dev_test', 'dev.en'), 'dev.en')
   rewrite_tokenized(os.path.join(data_dir, 'dev_test', 'dev.hi'), 'dev.hi')
+  rewrite_tokenized(os.path.join(data_dir,  'pib_train.hi'), 'train.hi')
+  rewrite_tokenized(os.path.join(data_dir,  'pib_train.en'), 'train.en')
 
 
 if __name__ == "__main__":
@@ -52,6 +55,14 @@ TEXT=iitb/tokenized
 fairseq-preprocess --source-lang hi --target-lang en \
     --trainpref $TEXT/train --validpref $TEXT/dev --testpref $TEXT/test \
     --destdir data-bin/iitb \
+    --workers 12
+"""
+
+"""
+TEXT=iitb/tokenized_pib
+fairseq-preprocess --source-lang hi --target-lang en \
+    --trainpref $TEXT/train --validpref $TEXT/dev --testpref $TEXT/test \
+    --destdir data-bin/iitb_pib \
     --workers 12
 """
 
